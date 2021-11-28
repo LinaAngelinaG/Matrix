@@ -1,23 +1,21 @@
 #pragma once
 
-template <class T>
-class Matrix
-{
+class Matrix{
 private:
-	T** matr;
+	double** matr;
 	int row, col;
 	void clear();
 
 public:
 	Matrix(int, int);
 	~Matrix() { clear(); }
-	Matrix(const Matrix<T>& a);
+	
+	double* operator [] (int n) const;
+	Matrix& operator = (const Matrix&);
+	Matrix& operator += (Matrix&);
+	Matrix& operator *= (Matrix&);
+	Matrix& operator * (Matrix&) const;
+	Matrix& operator + (Matrix&) const;
 
-	T* operator [] (int n) const;
-	Matrix<T>& operator = (const Matrix<T>&);
-	Matrix<T>& operator += (Matrix<T>&);
-	Matrix<T>& operator *= (Matrix<T>&);
-	Matrix<T>& operator * (Matrix<T>&) const;
-	Matrix<T>& operator + (Matrix<T>&) const;
 	void print()const;
 };

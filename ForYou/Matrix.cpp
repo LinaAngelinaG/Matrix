@@ -1,14 +1,13 @@
 #include "Matrix.h"
 #include <iostream>
 
-template <class T>
-T* Matrix<T>::operator [] (int n) const{
+
+double* Matrix::operator [] (int n) const{
 	return matr[n];
 }
 
-template <class T>
-void Matrix<T>::clear() {
-	for (int j = 0; j < col; j++) {
+void Matrix::clear() {
+	for (int j = 0; j < row; j++) {
 		delete[] matr[j];
 	}
 	if (row > 0) {
@@ -16,43 +15,28 @@ void Matrix<T>::clear() {
 	}
 }
 
-template<class T>
-Matrix<T>::Matrix(const Matrix<T>& another)
-{
-	row = another.row;
-	col = another.col;
-	clear();
-	matr = new T* [row]; 
-	for (int i = 0; i < row; i++) {
-		matr[i] = new T[col];
-	}
-	for (int k = 0; k < row; k++) {
-		for (int i = 0; i < col; i++) {
-			matr[k][i] = another.matr[k][i];
-		}
-	}
-}
-
-template <class T>
-Matrix<T>::Matrix(int n, int m) : row(n), col(m) {
-	matr = new T* [row];
+Matrix::Matrix(int n, int m) : row(n), col(m) {
+	matr = new double* [row];
 	for (int j = 0; j < n; j++) {
-		matr[j] = new T[col];
+		matr[j] = new double[col];
 	}
-	
+
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
-			matr[i][j] = (T) i*j;
+			matr[i][j] = (double)i * j;
 		}
 	}
-};
+}; 
 
-template <class T>
-Matrix<T>& Matrix<T>::operator = (const Matrix<T>& another) {
+Matrix& Matrix::operator = (const Matrix& another) {
 	if (this != &another) {
 		clear();
 		col = another.col;
 		row = another.row;
+		matr = new  double* [row];
+		for (int j = 0; j < row; j++) {
+			matr[j] = new double[another.col];
+		}
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
 				matr[i][j] = another.matr[i][j];
@@ -62,8 +46,7 @@ Matrix<T>& Matrix<T>::operator = (const Matrix<T>& another) {
 	return *this;
 }
 
-template <class T>
-Matrix<T>& Matrix<T>::operator += (Matrix<T>& another) {
+Matrix& Matrix::operator += (Matrix& another) {
 	if (another.row != row || another.col != col) {
 		throw std::exception("Different sizes.");
 	}
@@ -75,52 +58,40 @@ Matrix<T>& Matrix<T>::operator += (Matrix<T>& another) {
 	return *this;
 }
 
-template <class T>
-Matrix<T>& Matrix<T>::operator *= (Matrix<T>& another) {
+Matrix& Matrix::operator *= (Matrix& another) {
 	if (col != another.row) {
 		throw std::exception("Different sizes.");
 	}
-	Matrix<T> mat(row, col);
+	Matrix mat(row, col);
 	mat = *this;
 	clear();
-	matr = new  T*[row];
+	matr = new  double*[row];
+	col = another.col;
 	for (int j = 0; j < row; j++) {
-		matr[j] = new T[another.row];
+		matr[j] = new double[col];
 	}
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
 			matr[i][j] = 0;
-			for (int k = 0; k < col; k++) {
+			for (int k = 0; k < another.row; k++) {
 				matr[i][j] += mat.matr[i][k] * another[k][j];
 			}
 		}
 	}
-
 	return *this;
 }
 
-template <class T>
-Matrix<T>& Matrix<T>::operator * (Matrix<T>& another) const {
+Matrix& Matrix::operator * (Matrix& another) const {
 	if (col != another.row) {
 		throw std::exception("Different sizes.");
 	}
-	Matrix<T> matr_res(row, another.col);
-	matr_res = *this;
-	matr_res *= another;
-	/*
-	for (int i = 0; i < row; i++) {
-		for (int j = 0; j < col; j++) {
-			matr_res[i][j] = 0;
-			for (int k = 0; k < col; k++) {
-				matr_res[i][j] += matr[i][k] * another[k][j];
-			}
-		}
-	}*/
-	return matr_res;
+	Matrix* matr_res = new Matrix(row,col);
+	*matr_res = *this;
+	(*matr_res) *= another;
+	return *matr_res;
 }
 
-template <class T>
-void Matrix<T>::print() const{
+void Matrix::print() const{
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < col; j++)
@@ -130,13 +101,13 @@ void Matrix<T>::print() const{
 	std::cout << "---------------------" << std::endl;
 }
 
-template <class T>
-Matrix<T>& Matrix<T>::operator + (Matrix<T>& another) const {
+Matrix& Matrix::operator + (Matrix& another) const {
 	if (another.row != row || another.col != col) {
 		throw std::exception("Different sizes.");
 	}
-	Matrix<T> mnew(row,col);
-	mnew = *this;
-	mnew += another;
-	return mnew;
+	Matrix* mnew = new Matrix(row,col);
+	*mnew = *this;
+	*mnew += another;
+	
+	return *mnew;
 }
