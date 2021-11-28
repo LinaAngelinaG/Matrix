@@ -6,6 +6,16 @@ T* Matrix<T>::operator [] (int n) const{
 	return matr[n];
 }
 
+template <class T>
+void Matrix<T>::clear() {
+	for (int j = 0; j < col; j++) {
+		delete[] matr[j];
+	}
+	if (row > 0) {
+		delete[] matr;
+	}
+}
+
 template<class T>
 Matrix<T>::Matrix(const Matrix<T>& another)
 {
@@ -25,9 +35,9 @@ Matrix<T>::Matrix(const Matrix<T>& another)
 
 template <class T>
 Matrix<T>::Matrix(int n, int m) : row(n), col(m) {
-	matr = (T**) new T* [row];
+	matr = new T* [row];
 	for (int j = 0; j < n; j++) {
-		matr[j] = (T*) new T[col];
+		matr[j] = new T[col];
 	}
 	
 	for (int i = 0; i < row; i++) {
@@ -63,16 +73,6 @@ Matrix<T>& Matrix<T>::operator += (Matrix<T>& another) {
 		}
 	}
 	return *this;
-}
-
-template <class T>
-void Matrix<T>::clear() {
-	for (int j = 0; j < col; j++) {
-		delete [] matr[j];
-	}
-	if (row > 0) {
-		delete[] matr;
-	}
 }
 
 template <class T>

@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 template <class T>
 class Matrix
@@ -8,6 +7,7 @@ private:
 	T** matr;
 	int row, col;
 	void clear();
+
 public:
 	Matrix(int, int);
 	~Matrix() { clear(); }
