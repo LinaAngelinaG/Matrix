@@ -13,6 +13,7 @@ void Matrix::clear() {
 	if (row > 0) {
 		delete[] matr;
 	}
+	row = col = 0;
 }
 
 Matrix::Matrix(int n, int m) : row(n), col(m) {
@@ -28,6 +29,21 @@ Matrix::Matrix(int n, int m) : row(n), col(m) {
 	}
 }; 
 
+Matrix::Matrix(const Matrix& another) {
+	clear();
+	another.print();
+	row = another.row, col = another.col;
+	matr = new double*[row];
+	for (int i = 0; i < row; i++) {
+		matr[i] = new double [col];
+	}
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			matr[i][j] = another.matr[i][j];
+		}
+	}
+}
+
 Matrix& Matrix::operator = (const Matrix& another) {
 	if (this != &another) {
 		clear();
@@ -35,7 +51,7 @@ Matrix& Matrix::operator = (const Matrix& another) {
 		row = another.row;
 		matr = new  double* [row];
 		for (int j = 0; j < row; j++) {
-			matr[j] = new double[another.col];
+			matr[j] = new double[col];
 		}
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
@@ -46,7 +62,7 @@ Matrix& Matrix::operator = (const Matrix& another) {
 	return *this;
 }
 
-Matrix& Matrix::operator += (Matrix& another) {
+Matrix& Matrix::operator += (const Matrix& another) {
 	if (another.row != row || another.col != col) {
 		throw std::exception("Different sizes.");
 	}
@@ -58,7 +74,7 @@ Matrix& Matrix::operator += (Matrix& another) {
 	return *this;
 }
 
-Matrix& Matrix::operator *= (Matrix& another) {
+Matrix& Matrix::operator *= (const Matrix& another) {
 	if (col != another.row) {
 		throw std::exception("Different sizes.");
 	}
@@ -81,14 +97,13 @@ Matrix& Matrix::operator *= (Matrix& another) {
 	return *this;
 }
 
-Matrix& Matrix::operator * (Matrix& another) const {
+Matrix Matrix::operator * (const Matrix& another) const {
 	if (col != another.row) {
 		throw std::exception("Different sizes.");
 	}
-	Matrix* matr_res = new Matrix(row,col);
-	*matr_res = *this;
-	(*matr_res) *= another;
-	return *matr_res;
+	Matrix matr_res(row,col);
+	matr_res = *this;
+	return (matr_res) *= another;
 }
 
 void Matrix::print() const{
@@ -101,13 +116,13 @@ void Matrix::print() const{
 	std::cout << "---------------------" << std::endl;
 }
 
-Matrix& Matrix::operator + (Matrix& another) const {
+Matrix Matrix::operator + (const Matrix& another) const {
 	if (another.row != row || another.col != col) {
 		throw std::exception("Different sizes.");
 	}
-	Matrix* mnew = new Matrix(row,col);
-	*mnew = *this;
-	*mnew += another;
-	
-	return *mnew;
+	Matrix mnew(row,col);
+	mnew = *this;
+	mnew += another;
+	mnew.print();
+	return mnew;
 }

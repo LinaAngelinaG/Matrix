@@ -8,14 +8,15 @@ private:
 
 public:
 	Matrix(int, int);
+	Matrix(const Matrix&);
 	~Matrix() { clear(); }
 	
 	double* operator [] (int n) const;
 	Matrix& operator = (const Matrix&);
-	Matrix& operator += (Matrix&);
-	Matrix& operator *= (Matrix&);
-	Matrix& operator * (Matrix&) const;
-	Matrix& operator + (Matrix&) const;
+	Matrix& operator += (const Matrix&);
+	Matrix& operator *= (const Matrix&);
+	Matrix operator * (const Matrix&) const;
+	Matrix operator + (const Matrix&) const;
 
 	void print()const;
 };
